@@ -1,0 +1,177 @@
+{{- if and .Values.demo .Values.network.enabled }}{{ fail "Demo cannot be network exposed" }}{{ end }}
+{{- if and .Values.network.enabled (not (hasPrefix "https://" .Values.network.publicUrl)) }}{{ fail "network.publicUrl must be an HTTPS origin" }}{{ end }}
+{{- if and .Values.ingress.enabled (not .Values.network.enabled) }}{{ fail "Ingress requires network.enabled" }}{{ end }}
+{{- if and .Values.ingress.enabled (not .Values.ingress.tlsSecretName) }}{{ fail "Ingress requires a TLS secret" }}{{ end }}
+{{- if and .Values.bootstrap.enabled (or .Values.demo (not .Values.bootstrap.existingSecret) (not .Values.bootstrap.email)) }}{{ fail "Bootstrap requires a workspace, email and existing password Secret" }}{{ end }}
+{{- if not (has .Values.profile (list "standalone" "neurofunken")) }}
+{{- fail "profile must be standalone or neurofunken" }}
+{{- end }}
+{{- $name := printf "%s-brilliantis" .Release.Name | trunc 63 | trimSuffix "-" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $name }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [ReadWriteOnce]
+  {{- if .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    app.kubernetes.io/name: brilliantis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: brilliantis
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: brilliantis
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 120
+      {{- if .Values.bootstrap.enabled }}
+      initContainers:
+        - name: initialize-workspace
+          image: {{ if .Values.image.digest }}{{ printf "%s@%s" .Values.image.repository .Values.image.digest | quote }}{{ else }}{{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}{{ end }}
+          args: [--database, /data/brilliantis.sqlite, --init-admin, {{ .Values.bootstrap.email | quote }}, --password-file, /bootstrap/password, --init-if-empty]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: bootstrap, mountPath: /bootstrap, readOnly: true}
+      {{- end }}
+      containers:
+        - name: brilliantis
+          image: {{ if .Values.image.digest }}{{ printf "%s@%s" .Values.image.repository .Values.image.digest | quote }}{{ else }}{{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}{{ end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --profile
+            - {{ .Values.profile | quote }}
+            - --database
+            - {{ if .Values.demo }}"/data/demo.sqlite"{{ else }}"/data/brilliantis.sqlite"{{ end }}
+            {{- if .Values.network.enabled }}
+            - --bind
+            - "0.0.0.0"
+            - --public-url
+            - {{ .Values.network.publicUrl | quote }}
+            {{- end }}
+            {{- if .Values.connectors.enabled }}
+            - --connectors-file
+            - /config/connectors/config.json
+            {{- end }}
+            {{- if .Values.oidc.enabled }}
+            - --oidc-file
+            - /config/oidc/config.json
+            {{- end }}
+            {{- if .Values.demo }}
+            - --demo
+            {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          readinessProbe:
+            {{- if .Values.network.enabled }}
+            httpGet:
+              path: /readyz
+              port: 4317
+            {{- else }}
+            exec:
+              command: [/usr/local/bin/brilliantis, --healthcheck]
+            {{- end }}
+            initialDelaySeconds: 3
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: [/usr/local/bin/brilliantis, --healthcheck]
+            initialDelaySeconds: 20
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - {name: temporary, mountPath: /tmp}
+            {{- if .Values.connectors.enabled }}
+            - {name: connectors, mountPath: /config/connectors, readOnly: true}
+            {{- if .Values.connectors.existingSecret }}
+            - {name: connector-secrets, mountPath: /secrets/connectors, readOnly: true}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.oidc.enabled }}
+            - {name: oidc, mountPath: /config/oidc, readOnly: true}
+            {{- if .Values.oidc.existingSecret }}
+            - {name: oidc-secret, mountPath: /secrets/oidc, readOnly: true}
+            {{- end }}
+            {{- end }}
+      volumes:
+        - name: temporary
+          emptyDir:
+            sizeLimit: 128Mi
+        {{- if .Values.bootstrap.enabled }}
+        - name: bootstrap
+          secret:
+            secretName: {{ .Values.bootstrap.existingSecret | quote }}
+            defaultMode: 0440
+            items:
+              - {key: {{ .Values.bootstrap.passwordKey | quote }}, path: password}
+        {{- end }}
+        {{- if .Values.connectors.enabled }}
+        - name: connectors
+          configMap:
+            name: {{ required "connectors.configMap is required" .Values.connectors.configMap | quote }}
+        {{- if .Values.connectors.existingSecret }}
+        - name: connector-secrets
+          secret:
+            secretName: {{ .Values.connectors.existingSecret | quote }}
+            defaultMode: 0440
+        {{- end }}
+        {{- end }}
+        {{- if .Values.oidc.enabled }}
+        - name: oidc
+          configMap:
+            name: {{ required "oidc.configMap is required" .Values.oidc.configMap | quote }}
+        {{- if .Values.oidc.existingSecret }}
+        - name: oidc-secret
+          secret:
+            secretName: {{ .Values.oidc.existingSecret | quote }}
+            defaultMode: 0440
+        {{- end }}
+        {{- end }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ $name }}

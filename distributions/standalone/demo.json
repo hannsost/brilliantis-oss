@@ -1,0 +1,76 @@
+[
+  {
+    "key": "standalone-demo-lead-0",
+    "command": "lead.create",
+    "input": {
+      "company": "Nordlicht Studio (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt0@example.invalid",
+      "title": "Beratung zum neuen Projekt",
+      "product_id": "service",
+      "source": "manual",
+      "amount_cents": 480000,
+      "next_action": "Bedarf besprechen"
+    },
+    "steps": []
+  },
+  {
+    "key": "standalone-demo-lead-1",
+    "command": "lead.create",
+    "input": {
+      "company": "Wiesenwerk (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt1@example.invalid",
+      "title": "Laufende Betreuung",
+      "product_id": "subscription",
+      "source": "manual",
+      "amount_cents": 240000,
+      "next_action": "Bedarf besprechen"
+    },
+    "steps": []
+  },
+  {
+    "key": "standalone-demo-lead-2",
+    "command": "lead.create",
+    "input": {
+      "company": "Hafen & Korn (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt2@example.invalid",
+      "title": "Erste Warenbestellung",
+      "product_id": "goods",
+      "source": "manual",
+      "amount_cents": 180000,
+      "next_action": "Bedarf besprechen"
+    },
+    "steps": []
+  },
+  {
+    "key": "standalone-demo-campaign-0",
+    "command": "campaign.create",
+    "input": {
+      "name": "Wissen, das weiterhilft",
+      "product_id": "service",
+      "audience": "Interessierte Unternehmen",
+      "objective": "Beratungsgespräche gewinnen",
+      "channel": "seo",
+      "budget_cents": 50000
+    }
+  },
+  {
+    "key": "standalone-demo-creator-0",
+    "command": "creator.create",
+    "input": {
+      "name": "Werkstatt Digital (Demo)",
+      "kind": "external",
+      "niche": "Praktische Unternehmensabläufe",
+      "channels": [
+        "youtube",
+        "blog"
+      ],
+      "handles": "Erfundenes Kooperationsbeispiel",
+      "email": "creator@example.invalid",
+      "budget_cents": 50000,
+      "notes": "Erste Kooperationsidee"
+    }
+  }
+]

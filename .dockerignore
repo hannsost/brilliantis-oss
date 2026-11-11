@@ -1,0 +1,6 @@
+target
+data
+artifacts
+.git
+.env
+node_modules

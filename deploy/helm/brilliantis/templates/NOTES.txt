@@ -1,0 +1,15 @@
+Brilliantis {{ .Chart.AppVersion }} · {{ .Values.profile }}
+The matching image must be available to your cluster before starting the workload.
+{{- if .Values.network.enabled }}
+Configured public origin: {{ .Values.network.publicUrl }}
+TLS must terminate at your configured ingress or reverse proxy.
+{{- else }}
+Open locally, preserving the Host header:
+  kubectl -n {{ .Release.Namespace }} port-forward deployment/{{ printf "%s-brilliantis" .Release.Name | trunc 63 | trimSuffix "-" }} 4317:4317
+  http://127.0.0.1:4317
+{{- end }}
+{{- if not .Values.demo }}
+Initialize the first administrator with bootstrap.existingSecret or the CLI before signing in.
+{{- end }}
+One organization and one SQLite writer per installation. The PVC is retained on uninstall.
+Back up before upgrades. Restore uses a new database and revokes sessions/API tokens.

@@ -1,0 +1,5 @@
+# Explicit NeuroFunken distribution. Connections require explicit operator configuration.
+# Contains no cluster endpoints, realms, tenant mappings or secret values.
+profile: neurofunken
+image:
+  repository: brilliantis-neurofunken

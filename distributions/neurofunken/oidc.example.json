@@ -1,0 +1,11 @@
+{
+  "issuer": "https://login.neurofunken.de/realms/neurofunken",
+  "audience": "brilliantis",
+  "client_id": "brilliantis",
+  "client_secret": {
+    "provider": "file",
+    "path": "/secrets/oidc/client-secret"
+  },
+  "browser_login": true,
+  "login_label": "Mit NeuroFunken anmelden"
+}

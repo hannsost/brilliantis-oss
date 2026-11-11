@@ -1,0 +1,233 @@
+{
+  "connections": [
+    {
+      "id": "mollie",
+      "name": "Mollie",
+      "provider": "mollie",
+      "base_url": "https://api.mollie.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/mollie.json"
+      },
+      "operations": [
+        "payments.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "provider": "stripe",
+      "base_url": "https://api.stripe.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/stripe.json"
+      },
+      "operations": [
+        "payments.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "paypal",
+      "name": "PayPal Sandbox",
+      "provider": "paypal",
+      "base_url": "https://api-m.sandbox.paypal.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/paypal.json"
+      },
+      "operations": [
+        "transactions.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "enable_banking",
+      "name": "Onlinebanking",
+      "provider": "enable_banking",
+      "base_url": "https://api.enablebanking.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/enable_banking.json"
+      },
+      "operations": [
+        "banks.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "shopware",
+      "name": "Shopware",
+      "provider": "shopware",
+      "base_url": "https://shop.example.invalid",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/shopware.json"
+      },
+      "operations": [
+        "orders.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "woocommerce",
+      "name": "WooCommerce",
+      "provider": "woocommerce",
+      "base_url": "https://shop.example.invalid",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/woocommerce.json"
+      },
+      "operations": [
+        "orders.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify",
+      "provider": "shopify",
+      "base_url": "https://store.example.invalid",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/shopify.json"
+      },
+      "operations": [
+        "orders.list"
+      ],
+      "settings": {
+        "api_version": "2026-04"
+      }
+    },
+    {
+      "id": "gmail",
+      "name": "Gmail",
+      "provider": "gmail",
+      "base_url": "https://gmail.googleapis.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/gmail.json"
+      },
+      "operations": [
+        "messages.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "search_console",
+      "name": "Search Console",
+      "provider": "search_console",
+      "base_url": "https://www.googleapis.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/search_console.json"
+      },
+      "operations": [
+        "sites.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "provider": "instagram",
+      "base_url": "https://graph.instagram.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/instagram.json"
+      },
+      "operations": [
+        "profile.get"
+      ],
+      "settings": {
+        "api_version": "v22.0",
+        "account_id": "REPLACE_ACCOUNT_ID"
+      }
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok",
+      "provider": "tiktok",
+      "base_url": "https://open.tiktokapis.com",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/tiktok.json"
+      },
+      "operations": [
+        "creator.get"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "discourse",
+      "name": "Forum",
+      "provider": "discourse",
+      "base_url": "https://forum.example.invalid",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/discourse.json"
+      },
+      "operations": [
+        "topics.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "sap_business_one",
+      "name": "SAP Business One",
+      "provider": "sap_business_one",
+      "base_url": "https://sap.example.invalid:50000/b1s/v2",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/sap_business_one.json"
+      },
+      "operations": [
+        "orders.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "sap_s4",
+      "name": "SAP S/4HANA",
+      "provider": "sap_s4",
+      "base_url": "https://sap.example.invalid/sap/opu/odata/sap",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/sap_s4.json"
+      },
+      "operations": [
+        "orders.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "datev_accounting",
+      "name": "DATEV Desktop API",
+      "provider": "datev_accounting",
+      "base_url": "https://datev.example.invalid/datev/api/accounting/v1",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/datev_accounting.json"
+      },
+      "operations": [
+        "clients.list"
+      ],
+      "settings": {}
+    },
+    {
+      "id": "peppol_storecove",
+      "name": "Peppol via Storecove",
+      "provider": "peppol_storecove",
+      "base_url": "https://api.storecove.com/api/v2",
+      "secret": {
+        "provider": "file",
+        "path": "/secrets/connectors/peppol_storecove.json"
+      },
+      "operations": [
+        "entities.get"
+      ],
+      "settings": {}
+    }
+  ]
+}

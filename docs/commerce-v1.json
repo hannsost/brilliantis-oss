@@ -1,0 +1,205 @@
+{
+  "contract": "brilliantis.commerce.v1",
+  "base_path": "/api/v1/commerce",
+  "schema_source": "/api/v1/openapi.json",
+  "authentication": {
+    "transport": "HTTPS, Authorization: Bearer <service token>",
+    "tenant": "One organization/workspace per installation. Scopes cover the whole workspace, not individual portal customers. Portal backend enforces its end-user ownership. Never expose this token to browsers.",
+    "portal_scopes": [
+      "commerce:read",
+      "commerce:write"
+    ],
+    "fulfillment_scopes": [
+      "commerce:read",
+      "commerce:fulfill"
+    ],
+    "billing_scopes": [
+      "commerce:read",
+      "commerce:billing"
+    ],
+    "catalog_scope": "admin",
+    "billing_boundary": "Dedicated server identity only. Verify Stripe webhook signatures, then read canonical Checkout/invoice/payment/refund/subscription objects with the operator-configured provider account. Never forward browser assertions, raw event bodies or secrets. This endpoint records evidence; it cannot execute charges or refunds."
+  },
+  "write_rules": {
+    "headers": [
+      "Authorization",
+      "Content-Type: application/json",
+      "Idempotency-Key"
+    ],
+    "replay": "Same actor, method/path semantics and JSON body plus original key return the stored response. Reusing the key for another payload returns 409. Retain pending body/key durably in portal/worker outbox.",
+    "versions": "Every transition requires the version returned by GET. After 409 reload and reassess; do not replace the version blindly.",
+    "external_ids": "source + resource kind + external_id unique. Duplicate creation with a new key returns 409 identifying the existing record. GET lookup resolves lost responses.",
+    "atomicity": "Business records, immutable quote/contract snapshots, events and command receipt commit in one SQLite transaction. Offer acceptance creates exactly one core order and one contract.",
+    "dates": "YYYY-MM-DD; EUR integer cents; taxes from published operator catalog. Automatic tax jurisdiction determination is not implemented."
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "scope": "commerce:read",
+      "returns": "Current immutable revision, state version, items; version 0 and no items before explicit operator publication."
+    },
+    {
+      "method": "POST",
+      "path": "/catalog",
+      "scope": "admin",
+      "schema": "CommerceCatalog",
+      "notes": "version=0 initially. Revision IDs immutable. hosting/saas have once/monthly/yearly charges and bounded integer dimensions. website/webapp/service remain manual unless operator opts in with auto_quote:true. Priced items may use charges:[] with priced dimensions. Nonempty positive selected total required; no frontend prices or custom dimension keys. No production prices seeded."
+    },
+    {
+      "method": "POST",
+      "path": "/customers",
+      "scope": "commerce:write",
+      "schema": "CommerceCustomer",
+      "notes": "Binds source/external_id to an actual core customer. Customer corrections use the existing versioned CRM endpoint by an authorized operator."
+    },
+    {
+      "method": "POST",
+      "path": "/customers/{id}/update",
+      "scope": "commerce:write",
+      "schema": "CommerceCustomerUpdate",
+      "notes": "version and customer_version plus customer:CustomerInput. Both optimistic versions required; concurrent core operator edits yield 409. Issued document snapshots remain immutable."
+    },
+    {
+      "method": "POST",
+      "path": "/offers",
+      "scope": "commerce:write",
+      "schema": "CommerceOffer",
+      "notes": "source, external_id, external_customer_id, catalog_revision, configuration_revision, item_id, quantity, configuration. No client prices. Requires current catalog. configuration_revision is an immutable caller reference, not a trusted price. Complete company and customer address required for priced offer."
+    },
+    {
+      "method": "POST",
+      "path": "/offers/{id}/price",
+      "scope": "admin",
+      "schema": "CommercePrice",
+      "notes": "Individual projects: attach an issued core quote for same customer, checking quote_version. Project lines are one-time. Projects cannot be accepted before this step."
+    },
+    {
+      "method": "POST",
+      "path": "/offers/{id}/accept",
+      "scope": "commerce:write",
+      "schema": "CommerceAccept",
+      "notes": "version + acceptance_reference. Expiry and current quote state checked. Returns order, contract_id, billing_plan and pending provisioning. No charge/provider action occurs."
+    },
+    {
+      "method": "POST",
+      "path": "/orders/{id}/provisioning",
+      "scope": "commerce:fulfill",
+      "schema": "CommerceProvision",
+      "notes": "version, status, external_reference, error_code. pending->running/failed; running->ready/failed; failed->running. ready requires reference; failed requires error. This records the authenticated worker report, not independent infrastructure proof."
+    },
+    {
+      "method": "POST",
+      "path": "/orders/{id}/invoice",
+      "scope": "finance:write",
+      "schema": "CommerceInvoice",
+      "notes": "Legacy finance operator initial invoice. Exactly one initial invoice from accepted quote; new automated recurring/provider evidence goes through /billing with commerce:billing."
+    },
+    {
+      "method": "GET",
+      "path": "/{customers|offers|orders}/{id}",
+      "scope": "commerce:read",
+      "notes": "Authoritative current record. Customers include customer and customer_version; orders include payment (initial invoice), billing subscription snapshot and billing.invoices (all cycles). Invoice and order versions independent. paid_cents reflects allocated funds net of scoped refunds; credited_cents/refunded_cents expose corrections."
+    },
+    {
+      "method": "GET",
+      "path": "/{customers|offers|orders}/lookup?source=...&external_id=...",
+      "scope": "commerce:read",
+      "notes": "Recover by external references. Order inherits offer source and external_id."
+    },
+    {
+      "method": "GET",
+      "path": "/events?after=0&limit=100",
+      "scope": "commerce:read",
+      "notes": "Durable ascending seq, next_cursor, has_more; 1–200 entries. Persist consumer cursor only after successful processing. Re-fetch referenced object; events are notifications, not executable instructions."
+    },
+    {
+      "method": "POST",
+      "path": "/orders/{id}/billing",
+      "scope": "commerce:billing",
+      "schema": "CommerceBilling",
+      "notes": "Tagged operation bind, invoice, refund, subscription. Every request includes order version, provider=stripe, provider_account_id, provider_event_id and normal Idempotency-Key. Returns order with billing projection. Rejects amounts/periods inconsistent with accepted server catalog. No raw provider payload, client prices, paid booleans or credentials."
+    }
+  ],
+  "events": {
+    "catalog": [
+      "commerce.catalog.published"
+    ],
+    "customer": [
+      "commerce.customer.registered",
+      "commerce.customer.updated"
+    ],
+    "offer": [
+      "commerce.offer.requested",
+      "commerce.offer.priced",
+      "commerce.offer.accepted"
+    ],
+    "order": [
+      "commerce.order.created",
+      "commerce.order.provisioning_changed",
+      "commerce.order.invoiced",
+      "commerce.order.billing_changed"
+    ],
+    "invoice": [
+      "commerce.invoice.changed",
+      "commerce.credit_note.created"
+    ],
+    "envelope": [
+      "seq",
+      "type",
+      "entity_id",
+      "version",
+      "created_at"
+    ],
+    "invoice_note": "commerce.invoice.changed carries invoice ID/version when allocation, refund or cancellation changes linked invoice; resolve existing order invoice reference and GET order. Creation uses order.invoiced."
+  },
+  "example_offer_request": {
+    "source": "neurofunken-website",
+    "external_id": "checkout-42",
+    "external_customer_id": "customer-7",
+    "catalog_revision": "hosting-2026-10-r1",
+    "configuration_revision": "configuration-42-r1",
+    "item_id": "hosting",
+    "quantity": 1,
+    "configuration": {
+      "cpu": 2
+    }
+  },
+  "initial_release_limits": [
+    "No autonomous invoice scheduler or provider webhook listener in Brilliantis: the dedicated server adapter supplies verified provider invoice-cycle evidence. No upgrades/proration/discounts/trial billing or automatic external provisioning.",
+    "No automatic tax-jurisdiction rules; catalog rates require operator setup.",
+    "No customer-level authorization within service-token workspace scopes.",
+    "No direct purchases, payment execution or infrastructure provisioning. Real provider activation belongs to a separately configured operator workflow.",
+    "Tax reporting, statutory annual accounts, DATEV EXTF, ELSTER receipts and e-invoice format validation remain explicit integration gaps. Exports are not submissions."
+  ],
+  "billing": {
+    "version": 1,
+    "readiness": "GET /readyz exposes commerce_billing_version:1, commerce_payment_capture_version:1 and schema:9. Require the capture capability before payment-only reconciliation.",
+    "bind": "customer_id (core), provider_customer_id, provider_subscription_id (empty for once only), checkout_reference, started_on YYYY-MM-DD. Immutable one checkout/order and one subscription/order. Bind after canonical Checkout retrieval, before invoice evidence.",
+    "invoice": "provider_invoice_id (in_ or cs_ once-only fallback), provider_customer_id, provider_subscription_id, initial:boolean, periods:[{cadence:monthly|yearly,start,end}], issue_date, due_date, status:open|paid|payment_failed|void, currency:EUR, total_cents, paid_cents, payments:[{id,amount_cents,booking_date}]. Positive payment entries must sum to paid_cents; paid requires full original gross. Cumulative original payments exclude refunds, which are separate evidence. status:void additionally requires voided_on (actual provider void date) for the correction journal; omitted for all other statuses.",
+    "periods": "Initial contains once and every selected recurring cadence. Later invoices contain only the supplied recurring cadences, with whole periods anchored to started_on; month/year anniversaries clip to the last day and preserve the original anchor. No prorations, discounts, trials or quantity changes in billing evidence. Recurring invoices may arrive before initial; periods and initial invoices are each unique.",
+    "payment": "Once-only captured Checkout without a provider invoice: provider_payment_id (real pi_...), provider_charge_id (real ch_...), provider_customer_id, checkout_reference, issue_date, booking_date, currency:EUR, amount_cents. Requires an existing matching once-only binding and the exact full stored order amount. The adapter must verify the canonical succeeded PaymentIntent and paid/captured Charge. Creates/issues the original Brilliantis invoice and allocates the real payment; no fake provider_invoice_id. Immutable payment_capture on the order retains the evidence and core invoice ID; billing.invoices exposes provider_payment_id/provider_charge_id instead of provider_invoice_id. Repeated identical captures remain no-ops for accounting even after partial/full refunds. Payment and Charge references cannot be assigned to another order. Existing invoice and new capture modes cannot be mixed for one initial invoice.",
+    "refund": "provider_invoice_id (omit only for payment-only captures), provider_customer_id, provider_subscription_id, provider_refund_id, payment_id, amount_cents, currency:EUR, booking_date. Without a provider invoice, payment_id is the captured pi_... and provider_subscription_id is empty. Successful canonical provider refund only. Requires imported payment. Partial corrections split original VAT groups with cumulative rounding; each refund has a credit note and negative PSP transaction allocated in the immutable journal. Final full refund exactly reverses the original gross/net/tax/rounding. No new payment is inferred.",
+    "subscription": "provider_customer_id, provider_subscription_id, status:active|past_due|unpaid|paused|canceled|incomplete|incomplete_expired|trialing, cancel_at_period_end:boolean, observed_at:Unix seconds of authoritative observation. Old observations cannot reactivate cancellation. This records provider state; the website service performs provider cancellation separately. Historical invoices may still be reconciled after cancellation; new future periods are rejected.",
+    "replay": "HTTP key+body+actor replay remains strict. Provider event uniqueness is provider/account/event/operation, with order and immutable evidence fingerprint. Event replay may use a new HTTP key/version. Same event can bind, invoice and update subscription using distinct HTTP keys. New events cannot reuse an invoice/payment/refund ID inconsistently or invoice overlapping periods. 409 stale order version: GET and reassess, preserve evidence. Missing binding/payment is retryable after reconciliation.",
+    "operator_catalog": "publish-commerce-catalog --database PATH --input-file PATH --expected-version N validates the same CommerceCatalog, requires an existing workspace/current schema/matching profile, atomically publishes as operator.cli and replays an already identical current revision. No admin service token needed."
+  },
+  "gross_pricing": {
+    "input": "Charge and LineInput optionally accept unit_gross_cents (EUR integer cents, 0..100000000000). unit_price_cents remains required net cents and must equal floor((unit_gross_cents * 10000 + (10000 + tax_basis_points)/2) / (10000 + tax_basis_points)). The existing quantity, tax-rate and document limits still apply. Omit unit_gross_cents for the unchanged net-pricing mode.",
+    "calculation": "Net line amounts and VAT rate-group rounding remain unchanged. A gross-priced line has gross_cents = round(quantity_milli * unit_gross_cents / 1000) and rounding_cents = gross_cents - net_cents - tax_cents. No caller-supplied rounding_cents is accepted. Aggregate quote, core order, contract and invoice snapshots store the sum of line rounding_cents; their gross_cents is the agreed payable amount, net_cents + tax_cents + rounding_cents.",
+    "renewals": "Immutable billing_plan lines retain unit_gross_cents. Each invoice selects its due cadences and recalculates VAT and rounding from those stored lines. Thus gross recurring prices remain fixed independently of one-off lines. Payment and billing.invoices summaries expose rounding_cents when the source invoice contains it.",
+    "accounting": "Payable rounding is journaled separately to revenue:rounding or expense:rounding without changing VAT or inventing a tax-free position. Partial refunds proportionally allocate the taxable consideration and signed rounding cumulatively; complete refunds reverse every original net, tax and rounding cent.",
+    "exports": "UBL TaxInclusiveAmount and CII GrandTotalAmount remain net plus VAT. PayableRoundingAmount (UBL) or RoundingAmount (CII) bridges to PayableAmount / DuePayableAmount. Print and workspace views show non-zero rounding separately. These remain draft XML artifacts pending the existing schema/Schematron gate.",
+    "compatibility": "No migration or repricing of existing records. Missing gross fields retain legacy net calculation and response shape. Catalog revisions and accepted snapshots remain immutable; publish a new revision for gross prices.",
+    "example": {
+      "unit_price_cents": 1092,
+      "unit_gross_cents": 1300,
+      "tax_basis_points": 1900,
+      "quantity_milli": 1000,
+      "net_cents": 1092,
+      "tax_cents": 207,
+      "rounding_cents": 1,
+      "gross_cents": 1300
+    }
+  }
+}

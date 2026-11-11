@@ -1,0 +1,139 @@
+{
+  "id": "neurofunken",
+  "label": "Brilliantis für NeuroFunken",
+  "workspace": "NeuroFunken",
+  "initials": "NF",
+  "tagline": "Dein Business. Verbunden.",
+  "description": "Zugeschnittene Distribution für NeuroFunkens Agenten, Produkte, Hosting und interne Geschäftsabläufe.",
+  "orchestrator": "Symphony (Anbindung geplant)",
+  "agent_note": "Agenten nutzen authentifizierte, versionierte API-Befehle. Externe Aufträge benötigen konfigurierte Anbieterzugänge und explizit erlaubte Operationen. In der lokalen Demo bleiben externe Aktionen ausgeschaltet.",
+  "catalog": [
+    {
+      "id": "hosting",
+      "name": "Cloud & Hosting",
+      "category": "Betrieb",
+      "description": "Server, Cluster, Backup, Monitoring und Betreuung.",
+      "billing": "Ressourcen + Betreuung + Einrichtung",
+      "price_status": "example_only"
+    },
+    {
+      "id": "fireflint",
+      "name": "FireFlint",
+      "category": "SaaS",
+      "description": "Unternehmensdaten und Inhalte für mehrere Kanäle.",
+      "billing": "Abonnement + Nutzung",
+      "price_status": "not_defined"
+    },
+    {
+      "id": "palmscout",
+      "name": "palmscout",
+      "category": "SaaS",
+      "description": "Recruiting, Angebote und Onboarding.",
+      "billing": "Abonnement",
+      "price_status": "not_defined"
+    },
+    {
+      "id": "flintplate",
+      "name": "FlintPlate",
+      "category": "SaaS",
+      "description": "Service, Küche, Waren und Team.",
+      "billing": "Standort + Abonnement",
+      "price_status": "not_defined"
+    },
+    {
+      "id": "koiforge",
+      "name": "KoiForge",
+      "category": "SaaS",
+      "description": "Belegte Auswertungen und Datenarbeit.",
+      "billing": "Abonnement + Nutzung",
+      "price_status": "not_defined"
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering & Integration",
+      "category": "Dienstleistung",
+      "description": "Software, Automatisierung, DATEV- und SAP-Anbindung.",
+      "billing": "Projekt / Zeit / Wartung",
+      "price_status": "not_defined"
+    },
+    {
+      "id": "brilliantis",
+      "name": "Brilliantis",
+      "category": "Produktkonzept",
+      "description": "Offenes CRM und ERP für Menschen und Agenten.",
+      "billing": "Self-hosted / betreutes SaaS",
+      "price_status": "not_defined"
+    }
+  ],
+  "integrations": [
+    {
+      "id": "website",
+      "name": "NeuroFunken Website",
+      "category": "Akquise",
+      "status": "local_import",
+      "description": "Lokaler JSON-Import von Anfragen. Hosting-Kalkulation bleibt unverbindlicher Snapshot."
+    },
+    {
+      "id": "solveit",
+      "name": "SolveIT",
+      "category": "Service",
+      "status": "planned",
+      "description": "Kunden- und Vertragsreferenzen, Tickets und Kommunikation über bestehende API."
+    },
+    {
+      "id": "symphony",
+      "name": "Symphony",
+      "category": "Agenten",
+      "status": "planned",
+      "description": "Ausführung und Wiederaufnahme über den vorhandenen Runtime-Vertrag."
+    },
+    {
+      "id": "fireflint",
+      "name": "FireFlint",
+      "category": "Produktdaten",
+      "status": "planned",
+      "description": "Inhalte und Assets aus FireFlint; Preise, Verträge und Belege in Brilliantis."
+    },
+    {
+      "id": "keycloak",
+      "name": "Keycloak",
+      "category": "Identität",
+      "status": "planned",
+      "description": "NeuroFunken-SSO: Zuordnung von Organisation, Vertrag, Produktmandant und Dienstidentität; Verdrahtung noch geplant."
+    },
+    {
+      "id": "bitwarden",
+      "name": "Bitwarden Secrets Manager",
+      "category": "Zugangsdaten",
+      "status": "planned",
+      "description": "NeuroFunken-Broker: explizite Workspace-/Projektzuordnung und Secret-Referenzen für Connectoren; Verdrahtung noch geplant."
+    },
+    {
+      "id": "documents",
+      "name": "Document Studio",
+      "category": "Dokumente",
+      "status": "planned",
+      "description": "Angebotsvorlagen und Belegansichten; Buchungen bleiben im Finanzmodul."
+    }
+  ],
+  "showcase": [
+    "SolveIT",
+    "FireFlint",
+    "Symphony",
+    "Keycloak",
+    "Bitwarden"
+  ],
+  "schema_version": 1,
+  "website_products": {
+    "default": "engineering",
+    "hosting": "hosting"
+  },
+  "legacy_product_ids": [
+    "orbit"
+  ],
+  "data_paths": {
+    "demo": "data/demo.sqlite",
+    "workspace": "data/neurofunken.sqlite",
+    "legacy_workspace": "data/orbit.sqlite"
+  }
+}

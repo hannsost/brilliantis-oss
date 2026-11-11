@@ -1,0 +1,68 @@
+{{- $name := printf "%s-brilliantis" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.network.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+spec:
+  selector:
+    app.kubernetes.io/name: brilliantis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - {name: http, port: 4317, targetPort: 4317}
+{{- if .Values.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $name }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  {{- end }}
+  tls:
+    - secretName: {{ .Values.ingress.tlsSecretName | quote }}
+      hosts: [{{ (urlParse .Values.network.publicUrl).hostname | quote }}]
+  rules:
+    - host: {{ (urlParse .Values.network.publicUrl).hostname | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $name }}
+                port: {number: 4317}
+{{- end }}
+{{- if .Values.networkPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $name }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: brilliantis
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.ingressNamespace | quote }}
+      ports: [{protocol: TCP, port: 4317}]
+  egress:
+    - ports: [{protocol: TCP, port: 443}]
+    - to:
+        - namespaceSelector: {}
+      ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]
+    {{- with .Values.networkPolicy.additionalEgress }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,164 @@
+[
+  {
+    "key": "demo-lead-0",
+    "command": "lead.create",
+    "input": {
+      "company": "Nordlicht Studio (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt0@example.invalid",
+      "title": "Managed Cloud für das neue Kundenportal",
+      "product_id": "hosting",
+      "source": "manual",
+      "amount_cents": 480000,
+      "next_action": "Ressourcen und Backup-Ziele abstimmen"
+    },
+    "steps": [
+      "qualified"
+    ]
+  },
+  {
+    "key": "demo-lead-1",
+    "command": "lead.create",
+    "input": {
+      "company": "Wiesenwerk (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt1@example.invalid",
+      "title": "Inhalte an einem Ort pflegen",
+      "product_id": "fireflint",
+      "source": "manual",
+      "amount_cents": 240000,
+      "next_action": "Angebotsumfang gemeinsam durchgehen"
+    },
+    "steps": [
+      "qualified",
+      "proposal"
+    ]
+  },
+  {
+    "key": "demo-lead-2",
+    "command": "lead.create",
+    "input": {
+      "company": "Hafen & Korn (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt2@example.invalid",
+      "title": "Service und Küche verbinden",
+      "product_id": "flintplate",
+      "source": "manual",
+      "amount_cents": 180000,
+      "next_action": "Erstes Bedarfsgespräch vorbereiten"
+    },
+    "steps": []
+  },
+  {
+    "key": "demo-lead-3",
+    "command": "lead.create",
+    "input": {
+      "company": "Morgenrot Labs (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt3@example.invalid",
+      "title": "Bewerbungen und Onboarding",
+      "product_id": "palmscout",
+      "source": "manual",
+      "amount_cents": 360000,
+      "next_action": "Prozess und Teamgröße aufnehmen"
+    },
+    "steps": [
+      "qualified"
+    ]
+  },
+  {
+    "key": "demo-lead-4",
+    "command": "lead.create",
+    "input": {
+      "company": "Wolkenbau (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt4@example.invalid",
+      "title": "DATEV-Übergabe automatisieren",
+      "product_id": "engineering",
+      "source": "manual",
+      "amount_cents": 650000,
+      "next_action": "Mapping und Beispieldatensatz abstimmen"
+    },
+    "steps": [
+      "qualified",
+      "proposal"
+    ]
+  },
+  {
+    "key": "demo-lead-5",
+    "command": "lead.create",
+    "input": {
+      "company": "Atelier Funke (Demo)",
+      "contact": "Demo-Kontakt",
+      "email": "kontakt5@example.invalid",
+      "title": "Pilot für strukturierte Auswertungen",
+      "product_id": "koiforge",
+      "source": "manual",
+      "amount_cents": 120000,
+      "next_action": "Pilotstart koordinieren"
+    },
+    "steps": [
+      "qualified",
+      "proposal",
+      "won"
+    ]
+  },
+  {
+    "key": "demo-campaign-0",
+    "command": "campaign.create",
+    "input": {
+      "name": "Ein Zuhause für gute Software",
+      "product_id": "hosting",
+      "channel": "content",
+      "audience": "Kleine Softwareteams mit eigener Anwendung",
+      "objective": "Beratungsgespräche zu betreutem Hosting gewinnen",
+      "budget_cents": 50000
+    }
+  },
+  {
+    "key": "demo-campaign-1",
+    "command": "campaign.create",
+    "input": {
+      "name": "Weniger Copy & Paste",
+      "product_id": "fireflint",
+      "channel": "email",
+      "audience": "Bestätigte Produktinteressenten",
+      "objective": "Content-Prozesse in einem ersten Gespräch verstehen",
+      "budget_cents": 25000
+    }
+  },
+  {
+    "key": "demo-creator-0",
+    "command": "creator.create",
+    "input": {
+      "name": "Studio Brilliantis (Demo)",
+      "kind": "brand",
+      "niche": "Offene Software und der Alltag kleiner Teams",
+      "channels": [
+        "instagram",
+        "tiktok"
+      ],
+      "handles": "Noch keine Accounts verbunden",
+      "email": "",
+      "budget_cents": 20000,
+      "notes": "Geplantes eigenes Markenprofil mit hilfreichen Einblicken in Softwarearbeit."
+    }
+  },
+  {
+    "key": "demo-creator-1",
+    "command": "creator.create",
+    "input": {
+      "name": "Werkstatt Digital (Demo)",
+      "kind": "external",
+      "niche": "Praktische Automatisierung für kleine Unternehmen",
+      "channels": [
+        "youtube",
+        "blog"
+      ],
+      "handles": "Erfundenes Kooperationsbeispiel",
+      "email": "creator@example.invalid",
+      "budget_cents": 50000,
+      "notes": "Kooperationsidee: Praxisbeitrag über strukturierte Unternehmensdaten."
+    }
+  }
+]

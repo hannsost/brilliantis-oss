@@ -1,0 +1,24 @@
+{
+  "connections": [
+    {
+      "id": "neurofunken-solveit",
+      "name": "NeuroFunken SolveIT",
+      "provider": "solveit",
+      "base_url": "https://support.neurofunken.de/api/v1",
+      "secret": {
+        "provider": "bitwarden",
+        "project_id": "00000000-0000-0000-0000-000000000001",
+        "secret_id": "00000000-0000-0000-0000-000000000002",
+        "machine_token_file": "/secrets/connectors/bitwarden-machine-token",
+        "server_url": "https://vault.bitwarden.eu"
+      },
+      "settings": {},
+      "operations": [
+        "applications.list",
+        "tickets.list",
+        "tickets.get",
+        "work.get"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+[
+  {
+    "id": "website",
+    "name": "Website-Anfragen",
+    "category": "Akquise",
+    "status": "local_import",
+    "description": "Normalisierte Kontaktanfragen lokal als JSON importieren. Externe Formulare können diesen Vertrag bedienen."
+  },
+  {
+    "id": "mollie",
+    "name": "Mollie",
+    "category": "Zahlungen",
+    "status": "planned",
+    "description": "Zahlungen, Mandate, Erstattungen und Abgleich. Keine Zahlungsaufrufe im Prototyp."
+  },
+  {
+    "id": "banking",
+    "name": "Onlinebanking",
+    "category": "Finanzen",
+    "status": "planned",
+    "description": "Konten, Salden und Umsätze; Zuordnung, Zahlungsentwürfe und Bankfreigabe über passenden Connector."
+  },
+  {
+    "id": "stripe",
+    "name": "Stripe",
+    "category": "Zahlungen",
+    "status": "planned",
+    "description": "Zahlungen, Abos, Gebühren, Auszahlungen und Abgleich mit Bank und Buchhaltung."
+  },
+  {
+    "id": "paypal",
+    "name": "PayPal",
+    "category": "Zahlungen",
+    "status": "planned",
+    "description": "Transaktionen, Erstattungen, Konflikte und Auszahlungen mit eigenem Anschlussprofil."
+  },
+  {
+    "id": "peppol",
+    "name": "Peppol",
+    "category": "E-Rechnungen",
+    "status": "planned",
+    "description": "Versand und Empfang über Access Point, Teilnehmer-ID und Zustellnachweise."
+  },
+  {
+    "id": "einvoice",
+    "name": "ZUGFeRD & XRechnung",
+    "category": "Belegformate",
+    "status": "planned",
+    "description": "Strukturierte Eingangs- und Ausgangsrechnungen mit versionierter Formatvalidierung."
+  },
+  {
+    "id": "gmail",
+    "name": "Gmail & E-Mail",
+    "category": "Accounts",
+    "status": "planned",
+    "description": "Eigene Postfächer verbinden, Entwürfe und Antworten zu Kampagnen und Kooperationen zuordnen."
+  },
+  {
+    "id": "social",
+    "name": "Instagram & TikTok",
+    "category": "Influencer",
+    "status": "planned",
+    "description": "Autorisierte Profile, Contentplanung und Veröffentlichung über verfügbare Plattform-APIs."
+  },
+  {
+    "id": "seo",
+    "name": "SEO & Search Console",
+    "category": "Akquise",
+    "status": "planned",
+    "description": "Keywords, Landingpages, Suchleistung und zugeordnete Leads; Inhalte über einen optionalen CMS-Adapter."
+  },
+  {
+    "id": "forums",
+    "name": "Foren & Communities",
+    "category": "Content",
+    "status": "planned",
+    "description": "Profile und fachliche Beiträge pro Community; Veröffentlichung nach jeweiligem API-Vertrag."
+  },
+  {
+    "id": "shops",
+    "name": "Onlineshops",
+    "category": "Commerce",
+    "status": "planned",
+    "description": "Eigene Shops, Shopware, WooCommerce und Shopify: Bestellungen, Zahlungen, Retouren und Rechnungsbezug."
+  },
+  {
+    "id": "datev",
+    "name": "DATEV",
+    "category": "Buchhaltung",
+    "status": "planned",
+    "description": "DATEV-Format und Belegreferenzen zuerst; Datenservices mit kundenspezifischem Zugang später."
+  },
+  {
+    "id": "sap",
+    "name": "SAP",
+    "category": "ERP",
+    "status": "planned",
+    "description": "Getrennte Adapter für S/4HANA APIs und Business One Service Layer; führendes System pro Objekt."
+  },
+  {
+    "id": "elster",
+    "name": "ELSTER / ERiC",
+    "category": "Steuern",
+    "status": "planned",
+    "description": "Steuerarbeitsraum und Exporte zuerst. Übermittlung über optionalen, separat geprüften Adapter."
+  },
+  {
+    "id": "identity",
+    "name": "OIDC / Single Sign-on",
+    "category": "Identität",
+    "status": "planned",
+    "description": "Optionaler, frei wählbarer Identitätsanbieter; Keycloak kann als Adapter angebunden werden."
+  },
+  {
+    "id": "secrets",
+    "name": "Secret-Provider",
+    "category": "Zugangsdaten",
+    "status": "planned",
+    "description": "Austauschbarer Secret-Speicher hinter Referenzen, etwa Bitwarden oder vorhandene Secret-Infrastruktur."
+  },
+  {
+    "id": "support",
+    "name": "Support-Provider",
+    "category": "Service",
+    "status": "planned",
+    "description": "Optionaler Supportanschluss über ein gemeinsames Referenzmodell, etwa an SolveIT."
+  },
+  {
+    "id": "content",
+    "name": "Content-Provider",
+    "category": "Content",
+    "status": "planned",
+    "description": "Optionales CMS und Asset-Verwaltung; etwa FireFlint oder ein vorhandenes Kundensystem."
+  }
+]

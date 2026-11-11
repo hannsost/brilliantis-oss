@@ -1,0 +1,11 @@
+{
+  "issuer": "https://identity.example.invalid/realms/company",
+  "audience": "brilliantis",
+  "client_id": "brilliantis-introspection",
+  "client_secret": {
+    "provider": "file",
+    "path": "/secrets/oidc/client-secret"
+  },
+  "browser_login": true,
+  "login_label": "Mit Single Sign-On anmelden"
+}

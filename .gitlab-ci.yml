@@ -1,0 +1,21 @@
+stages: [test]
+
+rust:
+  stage: test
+  image: rust:latest
+  cache:
+    key: cargo
+    paths: [target/, .cargo-home/]
+  variables:
+    CARGO_HOME: .cargo-home
+  script:
+    - cargo build --locked --workspace
+    - cargo test --locked --workspace
+
+secret_detection:
+  stage: test
+  image:
+    name: zricethezav/gitleaks:latest
+    entrypoint: [""]
+  script:
+    - gitleaks dir . --no-banner --redact

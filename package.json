@@ -1,0 +1,13 @@
+{
+  "name": "brilliantis-browser-checks",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test:browser": "node scripts/browser-check.mjs",
+    "test:access": "node scripts/browser-access.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

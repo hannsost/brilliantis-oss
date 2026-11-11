@@ -1,0 +1,46 @@
+image:
+  repository: brilliantis
+  tag: "0.2.0"
+  digest: ""
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+profile: standalone
+demo: false
+# One organization and one writer per installation. Independent releases provide SaaS isolation.
+network:
+  enabled: false
+  publicUrl: ""
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  tlsSecretName: ""
+bootstrap:
+  enabled: false
+  email: ""
+  existingSecret: ""
+  passwordKey: password
+connectors:
+  enabled: false
+  # Existing ConfigMap containing config.json; credentials are mounted separately.
+  configMap: ""
+  existingSecret: ""
+oidc:
+  enabled: false
+  configMap: ""
+  existingSecret: ""
+persistence:
+  size: 5Gi
+  storageClass: ""
+resources:
+  requests:
+    cpu: 50m
+    memory: 96Mi
+  limits:
+    cpu: "1"
+    memory: 384Mi
+networkPolicy:
+  enabled: false
+  ingressNamespace: ingress-nginx
+  # Add explicit provider ports here for self-hosted SAP or DATEV if needed.
+  additionalEgress: []

@@ -1,0 +1,31 @@
+/target/
+/data/
+/artifacts/
+*.sqlite*
+.env
+/node_modules/
+
+# --- secrets & local env (added for OSS release) ---
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+kubeconfig*
+*.kubeconfig
+secrets/
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+# --- build output ---
+target/
+node_modules/
+data/
+# --- editors / OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp

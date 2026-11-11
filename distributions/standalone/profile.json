@@ -1,0 +1,54 @@
+{
+  "id": "standalone",
+  "label": "Brilliantis Standalone",
+  "workspace": "Mein Unternehmen",
+  "initials": "B",
+  "tagline": "Dein Unternehmen. Dein System.",
+  "description": "Eigenständiges MIT-Produkt mit offenen APIs und frei wählbaren Diensten.",
+  "orchestrator": null,
+  "agent_note": "Agenten nutzen authentifizierte, versionierte API-Befehle. Externe Aufträge benötigen konfigurierte Anbieterzugänge und explizit erlaubte Operationen. In der lokalen Demo bleiben externe Aktionen ausgeschaltet.",
+  "catalog": [
+    {
+      "id": "service",
+      "name": "Dienstleistungen",
+      "category": "Leistung",
+      "description": "Eigene Beratung, Projekte und Services.",
+      "billing": "Projekt / Zeit",
+      "price_status": "example_only"
+    },
+    {
+      "id": "subscription",
+      "name": "Abonnements",
+      "category": "Wiederkehrend",
+      "description": "Eigene laufende Leistungen und Produkte.",
+      "billing": "Abonnement",
+      "price_status": "example_only"
+    },
+    {
+      "id": "goods",
+      "name": "Waren & Handel",
+      "category": "Commerce",
+      "description": "Eigene Waren und Shopangebote.",
+      "billing": "Einzelverkauf",
+      "price_status": "example_only"
+    }
+  ],
+  "integrations": [],
+  "showcase": [
+    "DATEV",
+    "SAP",
+    "Mollie",
+    "Onlineshops",
+    "Eigene APIs"
+  ],
+  "schema_version": 1,
+  "website_products": {
+    "default": "service",
+    "hosting": "service"
+  },
+  "legacy_product_ids": [],
+  "data_paths": {
+    "demo": "data/standalone-demo.sqlite",
+    "workspace": "data/brilliantis.sqlite"
+  }
+}
